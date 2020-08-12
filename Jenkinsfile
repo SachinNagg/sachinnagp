@@ -1,7 +1,7 @@
 pipeline {
   environment {
     registry = "dockerabctest/nagptest"
-    registryCredential = 'dockerhub'
+    registryCredential = 'docker'
     dockerImage = ''
   }
   agent any
