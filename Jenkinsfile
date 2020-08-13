@@ -1,7 +1,9 @@
 node {
   try {
-    stage('Checkout') {
-      checkout scm
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/SachinNagg/sachinnagp.git'
+      }
     }
     stage('Environment') {
       sh 'git --version'
