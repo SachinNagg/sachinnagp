@@ -1,9 +1,7 @@
 node {
   try {
     stage('Cloning Git') {
-      steps {
-        git 'https://github.com/SachinNagg/sachinnagp.git'
-      }
+        sh 'git clone https://github.com/SachinNagg/sachinnagp.git'
     }
     stage('Environment') {
       sh 'git --version'
