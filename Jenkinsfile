@@ -1,8 +1,5 @@
 node {
   try {
-    stage('Cloning Git') {
-        sh 'git clone https://github.com/SachinNagg/sachinnagp.git'
-    }
     stage('Environment') {
       sh 'git --version'
       echo "Branch: ${env.BRANCH_NAME}"
