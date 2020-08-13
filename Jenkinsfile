@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    registry = "dockerabctest/nagptest"
+    registry = "dockerabctest/registry"
     registryCredential = 'docker'
     dockerImage = ''
   }
