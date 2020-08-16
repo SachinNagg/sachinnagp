@@ -15,9 +15,9 @@ pipeline {
     stage('Code Quality Check via SonarQube') {
       steps {
         script {
-          def scannerHome = tool 'SonarQube';
+          def scannerHome = tool 'sonarqube';
             withSonarQubeEnv("SonarQube") {
-              sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=nagpsonar -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=0af71ab66ca601daeaddf444f5e292e8d702c4fe"
+              sh "${tool('sonarqube')}/bin/sonar-scanner -Dsonar.projectKey=nagpsonar -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=0af71ab66ca601daeaddf444f5e292e8d702c4fe"
             }
          }
        }
