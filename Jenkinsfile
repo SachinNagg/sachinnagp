@@ -55,7 +55,7 @@ pipeline {
     stage('Run docker') {
       steps {
         script {
-          sh 'docker run -d --name testnagp -p 7000:8080 ${registry}:${BUILD_NUMBER}'
+          sh 'docker run -d --name testnagp -p 7000:7000 ${registry}:${BUILD_NUMBER}'
         }
       }
     }
