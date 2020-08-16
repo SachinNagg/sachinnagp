@@ -42,11 +42,11 @@ pipeline {
       steps {
         script {
           sh '''
-          ContainerID=$(docker ps | grep 7000 | cut - d " " - f 1)
+          ContainerID=$(docker ps | grep 7000 | cut -d " " -f 1)
           if [ $ContainerID ]
           then
           docker stop $ContainerID
-          docker rm - f $ContainerID
+          docker rm -f $ContainerID
           fi
           '''
         }
