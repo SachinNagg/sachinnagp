@@ -25,9 +25,9 @@ pipeline {
     stage('check ls cmd') {
       steps {
         script {
-          sh ```
+          sh '''
             ContainerID=$(docker ps | grep 7000)
-          ```
+          '''
         }
       }
     }
