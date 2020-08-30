@@ -17,32 +17,36 @@ pipeline {
           
         stage('Build') {
             steps {
-                echo "*************** building the project ***************"
-				// Run Maven on a Unix agent.
                 sh 'mvn -DskipTests clean install'
             }
         }
-	    
-	    stage('Sonar analysis') {
-		    steps {
-			    withSonarQubeEnv('Test_Sonar') {
-				    sh "mvn sonar:sonar"
-			    }
-		    }
-	    }
-        
-        stage('UNIT TESTING') {
+	            stage('Deliver for development') {
+            when {
+                branch 'development' 
+            }
             steps {
-				echo "*************** Executing Unit test cases ***************"
-				// Run Maven on a Unix agent.
-                sh 'mvn test'
+		echo "hello! I am in development environment"
+		withSonarQubeEnv('Test_Sonar') {
+			echo "Sonar analysis"
+			sh "mvn sonar:sonar"
+		}
             }
         }
+        stage('Deploy for master') {
+            when {
+                branch 'production'  
+            }
+            steps {
+		echo "hello! I am in master environment"
+		echo "UNIT TESTING"  
+		sh 'mvn test'
+            }
+        }
+
 		stage ('Upload to Artifactory')
 		{
 			steps
 			{
-				echo "*************** Uploading artifacts to Artifactory ***************"
 				rtMavenDeployer (
                     id: 'deployer',
                     serverId: '123456789@artifactory',
@@ -60,6 +64,12 @@ pipeline {
 			}
 		}
     }
+	
+	Stage('Docker image') {
+		steps {
+			sh 'docke build -t i_sachinkumar08_develop:${BUILD_NUMBER} --no-cache -f Dockerfile .'
+		}
+	}
 	post {
         success {
                     echo "*************** The pipeline ${currentBuild.fullDisplayName} completed successfully ***************"
