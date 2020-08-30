@@ -19,9 +19,9 @@ pipeline {
                 sh 'mvn -DskipTests clean install'
             }
         }
-               stage('Deliver for development') {
+               stage('Deploy for develop') {
             when {
-                branch 'development'
+                branch 'develop'
             }
             steps {
                 echo "hello! I am in development environment"
@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Deploy for master') {
             when {
-                branch 'production'
+                branch 'master'
             }
             steps {
                 echo "hello! I am in master environment"
@@ -61,7 +61,17 @@ pipeline {
         }
         stage('Docker image') {
             steps {
-                sh 'docker build -t i_sachinkumar08_develop:${BUILD_NUMBER} --no-cache -f Dockerfile .'
+                sh 'docker build -t i_sachinkumar08_${branch}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
+            }
+        }
+        stage('Push to DTR') {
+            steps {
+                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${branch}:${BUILD_NUMBER}'
+            }
+        }
+        tage('Docker deployment') {
+            steps {
+                sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${branch}:${BUILD_NUMBER}'
             }
         }
     }
