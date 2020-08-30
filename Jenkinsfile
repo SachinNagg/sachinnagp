@@ -69,7 +69,7 @@ pipeline {
                 sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${branch}:${BUILD_NUMBER}'
             }
         }
-        tage('Docker deployment') {
+        stage('Docker deployment') {
             steps {
                 sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${branch}:${BUILD_NUMBER}'
             }
