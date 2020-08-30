@@ -1,18 +1,5 @@
-FROM node:10.8.0
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
-
-RUN npm install
-# If you are building your code for production
-# RUN npm install --only=production
-
-# Bundle app source
-COPY . .
-
-EXPOSE 8090
-CMD [ "npm", "start" ]
+FROM tomcat:alpine
+MAINTAINER Sachin Kumar
+RUN wget -O /usr/local/tomcat/webapps/launchstation04.war http://localhost:8082/artifactory/CI-Automation-JAVA/com/nagarro/devops-tools/devops/demosampleapplication/1.0.0-SNAPSHOT
+EXPOSE 8080
+CMD /usr/local/tomcat/bin/catalina.sh run
