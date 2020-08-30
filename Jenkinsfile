@@ -22,6 +22,14 @@ pipeline {
                 sh 'mvn -DskipTests clean install'
             }
         }
+	    
+	    stage('Sonar analysis') {
+		    steps {
+			    withSonarQubeEnv('Test_Sonar') {
+				    sh "mvn sonar:sonar"
+			    }
+		    }
+	    }
         
         stage('UNIT TESTING') {
             steps {
