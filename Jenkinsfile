@@ -68,7 +68,7 @@ pipeline {
         }
         stage('Push to DTR') {
             steps {
-                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}'
+                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
             }
         }
         stage('Docker deployment') {
