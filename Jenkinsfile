@@ -16,6 +16,8 @@ pipeline {
         }
         stage('Build') {
             steps {
+                echo "${GIT_BRANCH}"
+                echo '${env.GIT_BRANCH}'
                 sh 'mvn -DskipTests clean install'
             }
         }
