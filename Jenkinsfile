@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo "${GIT_BRANCH}"
+                echo ""
                 echo '${env.GIT_BRANCH}'
                 sh 'mvn -DskipTests clean install'
             }
@@ -63,17 +63,17 @@ pipeline {
         }
         stage('Docker image') {
             steps {
-                sh 'docker build -t i_sachinkumar08_${branch}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
+                sh 'docker build -t i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
             }
         }
         stage('Push to DTR') {
             steps {
-                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${branch}:${BUILD_NUMBER}'
+                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
             }
         }
         stage('Docker deployment') {
             steps {
-                sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${branch}:${BUILD_NUMBER}'
+                sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
             }
         }
     }
