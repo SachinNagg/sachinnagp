@@ -73,7 +73,7 @@ pipeline {
         }
         stage('Docker deployment') {
             steps {
-                sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                sh 'docker run --name nagp_java_app -d -p 6000:8080 i_sachinkumar08_${GIT_BRANCH}'
             }
         }
     }
