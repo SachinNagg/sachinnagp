@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment { 
+        DEVELOP_CONTAINER_PORT = 6100
+        MASTER_CONTAINER_PORT = 6000
+    }
     tools {
         // Install the Maven version configured as "Maven3" and add it to the path.
         maven 'Maven3'
@@ -66,11 +70,40 @@ pipeline {
                 sh 'docker build -t dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
             }
         }
-        stage('Push to DTR') {
-            steps {
-                sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+        
+        stage('Containers') {
+            parallel {
+                stage('PrecontainerCheck') {
+                  steps {
+                    script {
+                      sh '''
+                      Port=$MASTER_CONTAINER_PORT
+                      
+                      if [[ "$GIT_BRANCH" == "develop" ]]
+                      then
+                      Port=$DEVELOP_CONTAINER_PORT
+                      fi
+                      
+                      echo "${Port}"
+                      
+                      ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
+                      if [ $ContainerID ]
+                      then
+                      docker stop $ContainerID
+                      docker rm -f $ContainerID
+                      fi
+                      '''
+                    }
+                  }
+                }
+                stage('Push to DTR') {
+                    steps {
+                        sh 'docker push dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                    }
+                }
             }
         }
+
         stage('Docker deployment') {
             steps {
                 sh 'docker run --name nagp_java_app -d -p 6000:8080 dtr.nagarro.com:443/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
