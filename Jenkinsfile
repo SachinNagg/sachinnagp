@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Start') {
             steps {
-               echo "ls -l";
+               sh "ls -l";
             }
         }
       
