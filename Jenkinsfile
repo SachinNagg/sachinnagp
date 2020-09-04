@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo ""
                 echo '${env.GIT_BRANCH}'
-                sh 'mvn -DskipTests clean install'
+                sh 'mvn clean install'
             }
         }
                stage('Deploy for develop') {
