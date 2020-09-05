@@ -6,8 +6,6 @@ pipeline {
        
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
-
-        image = ''
     }
     tools {
         maven 'Maven3'
@@ -78,9 +76,9 @@ pipeline {
         stage('Docker image') {
             steps {
                 script {
-                    image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                    env.image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
                 }
-                sh "docker build -t ${image} --no-cache -f Dockerfile ."
+                sh 'docker build -t ${image} --no-cache -f Dockerfile .'
             }
         }
         stage('Containers') {
@@ -103,15 +101,14 @@ pipeline {
                 }
                 stage('Push to DTR') {
                     steps {
-                        sh "docker push ${image}"
+                        sh 'docker push ${image}'
                     }
                 }
             }
         }
         stage('Docker deployment') {
             steps {
-                echo "image" + image
-                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
+                sh 'docker run --name nagp_java_app -d -p 6000:8080 ${image}'
             }
         }
     }
