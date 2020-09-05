@@ -60,9 +60,8 @@ pipeline {
                 stage('PrecontainerCheck') {
                   steps {
                     script {
-                      sh '''
-                      echo $MASTER_CONTAINER_PORT
-                      Port="${MASTER_CONTAINER_PORT}"
+                      sh """
+                      Port=${MASTER_CONTAINER_PORT}
                       echo $Port
                       Port=$DOCKER_PORT
                       echo $Port
@@ -72,7 +71,7 @@ pipeline {
                       docker stop $ContainerID
                       docker rm -f $ContainerID
                       fi
-                      '''
+                      """
                     }
                   }
                 }
