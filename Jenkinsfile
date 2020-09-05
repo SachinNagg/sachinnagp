@@ -64,7 +64,9 @@ pipeline {
                       Port=$DOCKER_PORT
                       
                       echo "${Port}"
-                      
+                      Port=$MASTER_DOCKER_PORT
+                      echo "${Port}"
+
                       ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
