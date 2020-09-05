@@ -7,7 +7,7 @@ pipeline {
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
         
-        DOCKER_PORT = 6000
+        DOCKER_PORT = ''
         KUBERNETES_PORT = ''
     }
     tools {
