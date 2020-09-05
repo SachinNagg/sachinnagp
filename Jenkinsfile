@@ -94,9 +94,10 @@ pipeline {
                   steps {
                     script {
                       sh '''
-                      echo $DOCKER_PORT
+                      Port=$MASTER_CONTAINER_PORT
+                      echo $Port
                       
-                      ContainerID=$(docker ps | grep $DOCKER_PORT | cut -d " " -f 1)
+                      ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
                       docker stop $ContainerID
