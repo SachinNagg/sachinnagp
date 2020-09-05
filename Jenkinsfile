@@ -63,10 +63,12 @@ pipeline {
                       sh """
                       echo ${env.MASTER_CONTAINER_PORT}
                       Port=${env.MASTER_CONTAINER_PORT}
-                      echo $Port
+                      echo "${Port}"
                       echo ${Port}
                       Port=$DOCKER_PORT
-                      echo $Port
+                      Port=$MASTER_CONTAINER_PORT
+                      echo "${Port}"
+                      echo ${Port}
                       ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
