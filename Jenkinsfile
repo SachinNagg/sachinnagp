@@ -83,9 +83,9 @@ pipeline {
         stage('Docker image') {
             steps {
                 script {
-                    image = 'docker build -t dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                    image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
                 }
-                sh 'docker build -t dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
+                sh 'docker build -t ${image} --no-cache -f Dockerfile .'
             }
         }
         stage('Containers') {
@@ -94,9 +94,9 @@ pipeline {
                   steps {
                     script {
                       sh '''
-                      echo DOCKER_PORT
+                      echo $DOCKER_PORT
                       
-                      ContainerID=$(docker ps | grep DOCKER_PORT | cut -d " " -f 1)
+                      ContainerID=$(docker ps | grep $DOCKER_PORT | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
                       docker stop $ContainerID
@@ -108,15 +108,15 @@ pipeline {
                 }
                 stage('Push to DTR') {
                     steps {
-                        sh 'docker push dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                        sh 'docker push ${image}'
                     }
                 }
             }
         }
         stage('Docker deployment') {
             steps {
-                echo "image" + image
-                sh 'docker run --name nagp_java_app -d -p 6000:8080 dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                echo "image" + $image
+                sh 'docker run --name nagp_java_app -d -p 6000:8080 ${image}'
             }
         }
     }
