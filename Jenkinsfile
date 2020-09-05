@@ -55,7 +55,7 @@ pipeline {
                 script {
                     echo MASTER_DOCKER_PORT
                     echo "changing master port value"
-                    DOCKER_PORT = MASTER_DOCKER_PORT
+                    DOCKER_PORT=MASTER_DOCKER_PORT
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
@@ -64,6 +64,8 @@ pipeline {
         }
         stage('Upload to Artifactory')  {
             steps {
+                echo MASTER_CONTAINER_PORT
+                echo DOCKER_PORT
                 rtMavenDeployer(
                     id: 'deployer',
                     serverId: '123456789@artifactory',
@@ -96,7 +98,8 @@ pipeline {
                       sh '''
                       Port=$MASTER_CONTAINER_PORT
                       echo $Port
-                      
+                      Port=$DOCKER_PORT
+                      echo $Port
                       ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
