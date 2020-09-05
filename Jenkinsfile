@@ -60,22 +60,23 @@ pipeline {
                 stage('PrecontainerCheck') {
                   steps {
                     script {
-                      sh """
-                      echo ${env.MASTER_CONTAINER_PORT}
-                      Port=${env.MASTER_CONTAINER_PORT}
-                      echo "${Port}"
-                      echo ${Port}
-                      Port=$DOCKER_PORT
+                      sh '''
                       Port=$MASTER_CONTAINER_PORT
+                      
+                      if [[ "$GIT_BRANCH" == "develop" ]]
+                      then
+                      Port=$DEVELOP_CONTAINER_PORT
+                      fi
+                      
                       echo "${Port}"
-                      echo ${Port}
+                      
                       ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
                       docker stop $ContainerID
                       docker rm -f $ContainerID
                       fi
-                      """
+                      '''
                     }
                   }
                 }
