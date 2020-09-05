@@ -48,10 +48,8 @@ pipeline {
                     echo MASTER_DOCKER_PORT
                     echo "changing master port value"
                     env.DOCKER_PORT=MASTER_DOCKER_PORT
-                    echo DOCKER_PORT
                 }
                 
-                echo "TEST_VARIABLE = ${DOCKER_PORT}"
 
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
