@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-sample-app
+  labels: 
+    app: demo-sample-app
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: demo-sample-app
+  template:
+    metadata:
+      labels:
+        app: demo-sample-app
+    spec:
+      containers:
+        - name: "{{ .Values.containerName }}{{ .Values.branch }}"
+          image: {{ .Values.image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-sample-app-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: port8080
+      nodePort: {{ .Values.nodePort }}
+  selector: 
+    app: demo-sample-app

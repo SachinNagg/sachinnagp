@@ -6,6 +6,8 @@ pipeline {
        
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
+
+        image=''
     }
     tools {
         maven 'Maven3'
@@ -76,9 +78,9 @@ pipeline {
         stage('Docker image') {
             steps {
                 script {
-                    env.image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                    image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
                 }
-                sh 'docker build -t ${image} --no-cache -f Dockerfile .'
+                sh "docker build -t ${image} --no-cache -f Dockerfile ."
             }
         }
         stage('Containers') {
@@ -101,14 +103,22 @@ pipeline {
                 }
                 stage('Push to DTR') {
                     steps {
-                        sh 'docker push ${image}'
+                        sh "docker push ${image}"
                     }
                 }
             }
         }
         stage('Docker deployment') {
             steps {
-                sh 'docker run --name nagp_java_app -d -p 6000:8080 ${image}'
+                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
+            }
+        }
+        stage('Helm Chart deployment') {
+            steps {
+                sh """
+                    kubectl create ns sachinkumar08-java-\${BUILD_NUMBER}
+                    helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT
+                """
             }
         }
     }

@@ -1,0 +1,16 @@
+# Default values for helm-charts.
+replicaCount: 1
+
+# Default port number
+nodePort: 30157
+containerPort: 8080
+
+# To make the container name as per c_<username>_branchname
+containerName: c_sachinkumar08_
+
+# Default branch name
+branch: master
+
+# image detais
+# image:
+#  repository: dockerabctest/registry
