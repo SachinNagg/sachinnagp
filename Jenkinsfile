@@ -64,16 +64,6 @@ pipeline {
                       
                       echo "${Port}"
 
-                      Port=${DOCKER_PORT}
-                      echo "${Port}"
-
-                     echo "TEST_VARIABLE = ${DOCKER_PORT}"
-
-                    echo $DOCKER_PORT
-  echo '${DOCKER_PORT}'
-                      Port=$MASTER_DOCKER_PORT
-                      echo "${Port}"
-
                       ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
