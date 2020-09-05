@@ -64,8 +64,6 @@ pipeline {
         }
         stage('Upload to Artifactory')  {
             steps {
-                echo MASTER_CONTAINER_PORT
-                echo DOCKER_PORT
                 rtMavenDeployer(
                     id: 'deployer',
                     serverId: '123456789@artifactory',
@@ -119,7 +117,7 @@ pipeline {
         }
         stage('Docker deployment') {
             steps {
-                echo "image" + $image
+                echo "image" + image
                 sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
             }
         }
