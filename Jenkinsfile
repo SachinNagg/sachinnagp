@@ -38,7 +38,7 @@ pipeline {
             steps {
                 echo "hello! I am in development environment"
                 script {
-                    DOCKER_PORT = $DEVELOP_DOCKER_PORT
+                    DOCKER_PORT = DEVELOP_DOCKER_PORT
                 }
                 withSonarQubeEnv('Test_Sonar') {
                     echo "Sonar analysis"
@@ -52,7 +52,7 @@ pipeline {
             }
             steps {
                 script {
-                    DOCKER_PORT = $MASTER_DOCKER_PORT
+                    DOCKER_PORT = MASTER_DOCKER_PORT
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
