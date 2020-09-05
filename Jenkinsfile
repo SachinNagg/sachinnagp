@@ -116,8 +116,7 @@ pipeline {
         stage('Helm Chart deployment') {
             steps {
                 sh """
-                    kubectl create ns sachinkumar08-java-\${BUILD_NUMBER}
-                    helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT
+                    helm install demo-sample-app helm-charts -n sachinkumar08-java-\${BUILD_NUMBER} --set image=${image} --set nodePort=$DOCKER_PORT
                 """
             }
         }
