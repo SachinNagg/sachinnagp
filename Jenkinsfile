@@ -94,7 +94,7 @@ pipeline {
                   steps {
                     script {
                       sh '''
-                      Port=$MASTER_CONTAINER_PORT
+                      Port="${env.MASTER_CONTAINER_PORT}"
                       echo $Port
                       Port=$DOCKER_PORT
                       echo $Port
