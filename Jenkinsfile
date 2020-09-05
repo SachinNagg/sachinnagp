@@ -9,9 +9,10 @@ pipeline {
         
         DOCKER_PORT = ''
         KUBERNETES_PORT = ''
+
+        image = ''
     }
     tools {
-        // Install the Maven version configured as "Maven3" and add it to the path.
         maven 'Maven3'
     }
     options
@@ -31,14 +32,14 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-               stage('Deploy for develop') {
+        stage('Deploy for develop') {
             when {
                 branch 'develop'
             }
             steps {
                 echo "hello! I am in development environment"
                 script {
-                    DOCKER_PORT = $DEVELOP_DOCKER_PORT
+                    DOCKER_PORT = DEVELOP_DOCKER_PORT
                 }
                 withSonarQubeEnv('Test_Sonar') {
                     echo "Sonar analysis"
@@ -52,7 +53,9 @@ pipeline {
             }
             steps {
                 script {
-                    DOCKER_PORT = $MASTER_DOCKER_PORT
+                    echo MASTER_DOCKER_PORT
+                    echo "changing master port value"
+                    DOCKER_PORT = MASTER_DOCKER_PORT
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
@@ -79,19 +82,21 @@ pipeline {
         }
         stage('Docker image') {
             steps {
+                script {
+                    image = 'docker build -t dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
+                }
                 sh 'docker build -t dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER} --no-cache -f Dockerfile .'
             }
         }
-        
         stage('Containers') {
             parallel {
                 stage('PrecontainerCheck') {
                   steps {
                     script {
                       sh '''
-                      echo "${DOCKER_PORT}"
+                      echo DOCKER_PORT
                       
-                      ContainerID=$(docker ps | grep $DOCKER_PORT | cut -d " " -f 1)
+                      ContainerID=$(docker ps | grep DOCKER_PORT | cut -d " " -f 1)
                       if [ $ContainerID ]
                       then
                       docker stop $ContainerID
@@ -108,9 +113,9 @@ pipeline {
                 }
             }
         }
-
         stage('Docker deployment') {
             steps {
+                echo "image" + image
                 sh 'docker run --name nagp_java_app -d -p 6000:8080 dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
             }
         }
