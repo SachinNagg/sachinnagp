@@ -1,6 +1,6 @@
 # escape=`
 
-FROM tomcat:8.0
+FROM tomcat:alpine
 MAINTAINER Sachin Kumar
 # Create app directory
 # WORKDIR /usr/local/tomcat
