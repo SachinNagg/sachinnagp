@@ -108,7 +108,7 @@ pipeline {
                 }
                 stage('Push to DTR') {
                     steps {
-                        sh 'docker push ${image}'
+                        sh "docker push ${image}"
                     }
                 }
             }
@@ -116,7 +116,7 @@ pipeline {
         stage('Docker deployment') {
             steps {
                 echo "image" + $image
-                sh 'docker run --name nagp_java_app -d -p 6000:8080 ${image}'
+                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
             }
         }
     }
