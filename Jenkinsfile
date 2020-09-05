@@ -56,6 +56,7 @@ pipeline {
                     echo MASTER_DOCKER_PORT
                     echo "changing master port value"
                     DOCKER_PORT=MASTER_DOCKER_PORT
+                    echo DOCKER_PORT
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
