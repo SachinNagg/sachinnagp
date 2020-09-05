@@ -7,7 +7,7 @@ pipeline {
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
         
-        DOCKER_PORT = ''
+        DOCKER_PORT = 6000
         KUBERNETES_PORT = ''
     }
     tools {
@@ -52,6 +52,8 @@ pipeline {
             }
             steps {
                 script {
+                    echo MASTER_DOCKER_PORT
+                    echo "changing master port value"
                     DOCKER_PORT = MASTER_DOCKER_PORT
                 }
                 echo "hello! I am in master environment"
