@@ -1,11 +1,18 @@
 pipeline {
     agent any
     environment { 
-        DEVELOP_CONTAINER_PORT = 6100
-        MASTER_CONTAINER_PORT = 6000
+        DEVELOP_DOCKER_PORT=6100
+        MASTER_DOCKER_PORT = 6000
+       
+        DEVELOP_KUBERNETES_PORT = 30158
+        MASTER_KUBERNETES_PORT = 30157
+        
+        DOCKER_PORT = ''
+        KUBERNETES_PORT = ''
+
+        image = ''
     }
     tools {
-        // Install the Maven version configured as "Maven3" and add it to the path.
         maven 'Maven3'
     }
     options
@@ -18,18 +25,15 @@ pipeline {
                 checkout scm;
             }
         }
-        stage('Build') {
-            steps {
-                echo ""
-                echo '${env.GIT_BRANCH}'
-            }
-        }
-               stage('Deploy for develop') {
+        stage('Deploy for develop') {
             when {
                 branch 'develop'
             }
             steps {
                 echo "hello! I am in development environment"
+                script {
+                    DOCKER_PORT = DEVELOP_DOCKER_PORT
+                }
                 withSonarQubeEnv('Test_Sonar') {
                     echo "Sonar analysis"
                     sh "mvn sonar:sonar"
@@ -41,6 +45,12 @@ pipeline {
                 branch 'master'
             }
             steps {
+                script {
+                    echo MASTER_DOCKER_PORT
+                    echo "changing master port value"
+                    DOCKER_PORT=MASTER_DOCKER_PORT
+                    echo DOCKER_PORT
+                }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
             }
@@ -51,12 +61,7 @@ pipeline {
                   steps {
                     script {
                       sh '''
-                      Port=$MASTER_CONTAINER_PORT
-                      
-                      if [[ "$GIT_BRANCH" == "develop" ]]
-                      then
-                      Port=$DEVELOP_CONTAINER_PORT
-                      fi
+                      Port=$DOCKER_PORT
                       
                       echo "${Port}"
                       
