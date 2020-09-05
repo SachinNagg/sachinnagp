@@ -25,13 +25,6 @@ pipeline {
                 checkout scm;
             }
         }
-        stage('Build') {
-            steps {
-                echo ""
-                echo '${env.GIT_BRANCH}'
-                sh 'mvn clean install'
-            }
-        }
         stage('Deploy for develop') {
             when {
                 branch 'develop'
@@ -60,33 +53,6 @@ pipeline {
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
-                sh 'mvn test'
-            }
-        }
-        stage('Upload to Artifactory')  {
-            steps {
-                rtMavenDeployer(
-                    id: 'deployer',
-                    serverId: '123456789@artifactory',
-                    releaseRepo: 'CI-Automation-JAVA',
-                    snapshotRepo: 'CI-Automation-JAVA'
-                )
-                rtMavenRun(
-                    pom: 'pom.xml',
-                    goals: 'clean install',
-                    deployerId: 'deployer',
-                )
-                rtPublishBuildInfo(
-                    serverId: '123456789@artifactory',
-                )
-            }
-        }
-        stage('Docker image') {
-            steps {
-                script {
-                    image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
-                }
-                sh "docker build -t ${image} --no-cache -f Dockerfile ."
             }
         }
         stage('Containers') {
@@ -95,6 +61,7 @@ pipeline {
                   steps {
                     script {
                       sh '''
+                      echo $MASTER_CONTAINER_PORT
                       Port="${MASTER_CONTAINER_PORT}"
                       echo $Port
                       Port=$DOCKER_PORT
@@ -109,26 +76,7 @@ pipeline {
                     }
                   }
                 }
-                stage('Push to DTR') {
-                    steps {
-                        sh "docker push ${image}"
-                    }
-                }
             }
-        }
-        stage('Docker deployment') {
-            steps {
-                echo "image" + image
-                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
-            }
-        }
-    }
-    post {
-        success {
-            echo "*************** The pipeline ${currentBuild.fullDisplayName} completed successfully ***************"
-        }
-        failure {
-            echo "*************** The pipeline ${currentBuild.fullDisplayName} has failed ***************"
         }
     }
 }
