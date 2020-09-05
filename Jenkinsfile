@@ -66,6 +66,11 @@ pipeline {
                       Port=$DOCKER_PORT
                       
                       echo "${Port}"
+
+                      Port=${DOCKER_PORT}
+                      echo "${Port}"
+
+                      
                       Port=$MASTER_DOCKER_PORT
                       echo "${Port}"
 
