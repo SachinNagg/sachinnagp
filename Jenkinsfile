@@ -68,7 +68,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
                         sh "kubectl create ns sachinkumar08-java-\${BUILD_NUMBER}"
-                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT -n sachinkumar08-java-1"
+                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT"
                     }
                 }
             }
