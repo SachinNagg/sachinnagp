@@ -19,8 +19,7 @@ pipeline {
 
         skipDefaultCheckout()
 
-        buildDiscarder(logRotator: {daysToKeepStr: '10', numToKeepStr: '10'})
-
+        buildDiscarder(logRotator(numToKeepStr: '1'))
         disableConcurrentBuilds()
     }
     stages {
