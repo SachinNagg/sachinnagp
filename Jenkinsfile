@@ -112,7 +112,7 @@ pipeline {
         }
         stage('Docker deployment') {
             steps {
-                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
+                sh "docker run --name c_sachinkumar08_\${GIT_BRANCH} -d -p 6000:8080 ${image}"
             }
         }
         stage('Helm Chart deployment') {
