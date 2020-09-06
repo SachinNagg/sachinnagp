@@ -115,9 +115,17 @@ pipeline {
         }
         stage('Helm Chart deployment') {
             steps {
-                sh """
-                    helm install demo-sample-app helm-charts -n sachinkumar08-java-\${BUILD_NUMBER} --set image=${image} --set nodePort=$DOCKER_PORT
-                """
+                script {
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+
+                    // change context with related namespace
+                    sh "kubectl config set-context $(kubectl config current-context) --namespace=sachinkumar08-java-\${BUILD_NUMBER}"
+
+                    //Deploy with Helm
+                    echo "Deploying"
+                    sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT"
+                    }
+                }
             }
         }
     }
