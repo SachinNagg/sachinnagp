@@ -124,13 +124,13 @@ pipeline {
                      */
                     namespace = 'sachinkumar08-java-${BRANCH_NAME}'
                     
-                    // withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
                         /**
                         * Using latest helm 3.3.1 with --create-namespace flag to create ns.
                         * Also, using helm upgrade --install to create/update on the same port
                         */
                         sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace -n ${namespace}"
-                    // }
+                    }
                 }
             }
         }
