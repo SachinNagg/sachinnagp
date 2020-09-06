@@ -68,10 +68,9 @@ pipeline {
         stage('Helm Chart deployment') {
             steps {
                 script {
-                    namespace = 'sachinkumar08-java-${BUILD_NUMBER}'
+                    namespace = 'sachinkumar08-java-${GIT_BRANCH}'
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
-                        sh "kubectl create ns ${namespace}"
-                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT -n ${namespace}"
+                        sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace ${namespace}"
                     }
                 }
             }
