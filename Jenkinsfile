@@ -14,7 +14,14 @@ pipeline {
     }
     options
     {
+        timestamps()
         timeout(time: 1, unit: 'HOURS')
+
+        skipDefaultCheckout()
+
+        buildDiscarder(logRotator: {daysToKeepStr: '10', numToKeepStr: '10'})
+
+        disableConcurrentBuilds()
     }
     stages {
         stage('Start') {
@@ -24,38 +31,34 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo ""
-                echo '${env.GIT_BRANCH}'
                 sh 'mvn clean install'
             }
         }
-        stage('Deploy for develop') {
+        stage('Sonar Analysis') {
             when {
                 branch 'develop'
             }
             steps {
-                echo "hello! I am in development environment"
+                echo 'hello! I am in development environment'
                 script {
                     env.DOCKER_PORT = DEVELOP_DOCKER_PORT
                     env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
                 }
                 withSonarQubeEnv('Test_Sonar') {
-                    echo "Sonar analysis"
-                    sh "mvn sonar:sonar"
+                    sh 'mvn sonar:sonar'
                 }
             }
         }
-        stage('Deploy for master') {
+        stage('Unit Testing') {
             when {
                 branch 'master'
             }
             steps {
+                echo 'hello! I am in master environment'
                 script {
                     env.DOCKER_PORT=MASTER_DOCKER_PORT
                     env.KUBERENETES_PORT=MASTER_KUBERNETES_PORT
                 }
-                echo "hello! I am in master environment"
-                echo "UNIT TESTING"
                 sh 'mvn test'
             }
         }
@@ -77,7 +80,7 @@ pipeline {
                 )
             }
         }
-        stage('Docker image') {
+        stage('Docker Image') {
             steps {
                 script {
                     image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
@@ -92,7 +95,6 @@ pipeline {
                     script {
                       sh '''
                         Port=$DOCKER_PORT
-                        echo "${Port}"
                         ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
                         if [ $ContainerID ]
                         then
@@ -118,21 +120,25 @@ pipeline {
         stage('Helm Chart deployment') {
             steps {
                 script {
+                    /**
+                      * Sharing namespace as per the branch
+                     */
                     namespace = 'sachinkumar08-java-${GIT_BRANCH}'
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
-                        // sh "kubectl create ns ${namespace}"
+                    
+                    // withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        /**
+                        * Using latest helm 3.3.1 with --create-namespace flag to create ns.
+                        * Also, using helm upgrade --install to create/update on the same port
+                        */
                         sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace -n ${namespace}"
-                    }
+                    // }
                 }
             }
         }
     }
     post {
-        success {
-            echo "*************** The pipeline ${currentBuild.fullDisplayName} completed successfully ***************"
-        }
-        failure {
-            echo "*************** The pipeline ${currentBuild.fullDisplayName} has failed ***************"
+        always {
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
