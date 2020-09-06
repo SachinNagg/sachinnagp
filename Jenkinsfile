@@ -26,6 +26,7 @@ pipeline {
             steps {
                 echo ""
                 echo '${env.GIT_BRANCH}'
+                sh 'mvn clean install'
             }
         }
         stage('Deploy for develop') {
@@ -55,14 +56,63 @@ pipeline {
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
+                sh 'mvn test'
             }
         }
-
+        stage('Upload to Artifactory')  {
+            steps {
+                rtMavenDeployer(
+                    id: 'deployer',
+                    serverId: '123456789@artifactory',
+                    releaseRepo: 'CI-Automation-JAVA',
+                    snapshotRepo: 'CI-Automation-JAVA'
+                )
+                rtMavenRun(
+                    pom: 'pom.xml',
+                    goals: 'clean install',
+                    deployerId: 'deployer',
+                )
+                rtPublishBuildInfo(
+                    serverId: '123456789@artifactory',
+                )
+            }
+        }
         stage('Docker image') {
             steps {
                 script {
-                    image = 'dockerabctest/i_sachinkumar08_master:60'
+                    image = 'dockerabctest/i_sachinkumar08_${GIT_BRANCH}:${BUILD_NUMBER}'
                 }
+                sh "docker build -t ${image} --no-cache -f Dockerfile ."
+            }
+        }
+        stage('Containers') {
+            parallel {
+                stage('PrecontainerCheck') {
+                  steps {
+                    script {
+                      sh '''
+                        Port=$DOCKER_PORT
+                        echo "${Port}"
+                        ContainerID=$(docker ps | grep $Port | cut -d " " -f 1)
+                        if [ $ContainerID ]
+                        then
+                        docker stop $ContainerID
+                        docker rm -f $ContainerID
+                        fi
+                      '''
+                    }
+                  }
+                }
+                stage('Push to DTR') {
+                    steps {
+                        sh "docker push ${image}"
+                    }
+                }
+            }
+        }
+        stage('Docker deployment') {
+            steps {
+                sh "docker run --name nagp_java_app -d -p 6000:8080 ${image}"
             }
         }
         stage('Helm Chart deployment') {
