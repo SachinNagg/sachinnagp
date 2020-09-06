@@ -36,6 +36,7 @@ pipeline {
                 echo "hello! I am in development environment"
                 script {
                     env.DOCKER_PORT = DEVELOP_DOCKER_PORT
+                    env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
                 }
                 withSonarQubeEnv('Test_Sonar') {
                     echo "Sonar analysis"
@@ -50,6 +51,7 @@ pipeline {
             steps {
                 script {
                     env.DOCKER_PORT=MASTER_DOCKER_PORT
+                    env.KUBERENETES_PORT=MASTER_KUBERNETES_PORT
                 }
                 echo "hello! I am in master environment"
                 echo "UNIT TESTING"
@@ -68,7 +70,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
                         sh "kubectl create ns sachinkumar08-java-\${BUILD_NUMBER}"
-                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT"
+                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT"
                     }
                 }
             }
