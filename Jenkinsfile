@@ -42,9 +42,11 @@ pipeline {
                 script {
                     env.DOCKER_PORT = DEVELOP_DOCKER_PORT
                     env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
-                }
-                withSonarQubeEnv('Test_Sonar') {
-                    sh 'mvn sonar:sonar'
+                
+                    def scannerHome = tool 'SonarQubeScanner';
+                    withSonarQubeEnv("Test_Sonar") {
+                        sh "${scannerHome}/sonar-scanner.bat"
+                    }
                 }
             }
         }
