@@ -119,7 +119,7 @@ pipeline {
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
 
                         // change context with related namespace
-                        sh "kubectl config set-context $(kubectl config current-context) --namespace=sachinkumar08-java-1"
+                        sh 'kubectl config set-context $(kubectl config current-context) --namespace=sachinkumar08-java-1'
 
                         //Deploy with Helm
                         echo "Deploying"
