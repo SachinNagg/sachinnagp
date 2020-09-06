@@ -71,7 +71,7 @@ pipeline {
                     namespace = 'sachinkumar08-java-${GIT_BRANCH}'
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
                         // sh "kubectl create ns ${namespace}"
-                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace=${namespace}"
+                        sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace -n ${namespace}"
                     }
                 }
             }
