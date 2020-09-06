@@ -30,7 +30,12 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo ${env.BRANCH_NAME}
+                echo "${env.BRANCH_NAME}"
+                echo '${env.GIT_BRANCH}'
+                script {
+                    a = '${BRANCH_NAME}'
+                    sh "echo ${BRANCH_NAME}"
+                }
                 // sh 'mvn clean install'
             }
         }
