@@ -70,6 +70,7 @@ pipeline {
                 script {
                     namespace = 'sachinkumar08-java-${GIT_BRANCH}'
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                        // sh "kubectl create ns ${namespace}"
                         sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace ${namespace}"
                     }
                 }
