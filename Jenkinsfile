@@ -67,13 +67,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
-
-                        // change context with related namespace
-                        // sh 'kubectl config set-context $(kubectl config current-context)'
-
-                        //Deploy with Helm
-                        echo "Deploying"
-                        sh "kubectl create ns sachinkumar08-java-1"
+                        sh "kubectl create ns sachinkumar08-java-\${BUILD_NUMBER}"
                         sh "helm install demo-sample-app helm-charts --set image=${image} --set nodePort=$DOCKER_PORT -n sachinkumar08-java-1"
                     }
                 }
