@@ -45,7 +45,7 @@ pipeline {
                 
                     def scannerHome = tool 'SonarQubeScanner';
                     withSonarQubeEnv("Test_Sonar") {
-                        bat "${scannerHome}/bin/sonar-scanner"
+                        bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=com.nagarro.devops-tools.devops:demosampleapplication"
                     }
                 }
             }
