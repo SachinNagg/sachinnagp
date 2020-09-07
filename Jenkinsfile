@@ -85,7 +85,7 @@ pipeline {
         stage('Docker Image') {
             steps {
                 script {
-                    image = 'dockerabctest/i_sachinkumar08_master:5' // 'dockerabctest/i_sachinkumar08_${BRANCH_NAME}:${BUILD_NUMBER}'
+                    image = 'dockerabctest/i_sachinkumar08_develop:5' // 'dockerabctest/i_sachinkumar08_${BRANCH_NAME}:${BUILD_NUMBER}'
                 }
                 // sh "docker build -t ${image} --no-cache -f Dockerfile ."
             }
