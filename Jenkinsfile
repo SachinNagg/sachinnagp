@@ -138,12 +138,12 @@ pipeline {
         //     }
         // }
     }
-    post {
-        always {
-           script {
-                if (${env.BRANCH_NAME} == 'master')
-                    junit '**/test-reports/.*xml'
-            }
-        }
-    }
+    // post {
+    //     always {
+    //        script {
+    //             if (${env.BRANCH_NAME} == 'master')
+    //                 junit '**/test-reports/.*xml'
+    //         }
+    //     }
+    // }
 }
