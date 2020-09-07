@@ -140,11 +140,9 @@ pipeline {
     }
     post {
         always {
-            when {
-                branch 'master'
-            }
-            steps {
-                junit '**/test-reports/.*xml'
+           script {
+                if (${env.BRANCH_NAME} == 'master')
+                    junit '**/test-reports/.*xml'
             }
         }
     }
