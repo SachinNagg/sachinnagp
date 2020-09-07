@@ -33,61 +33,61 @@ pipeline {
         //         // sh 'mvn clean install'
         //     }
         // }
-        stage('Sonar Analysis') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'hello! I am in development environment'
-                script {
-                    env.DOCKER_PORT = DEVELOP_DOCKER_PORT
-                    env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
+        // stage('Sonar Analysis') {
+        //     when {
+        //         branch 'develop'
+        //     }
+        //     steps {
+        //         echo 'hello! I am in development environment'
+        //         script {
+        //             env.DOCKER_PORT = DEVELOP_DOCKER_PORT
+        //             env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
                 
-                    def scannerHome = tool 'SonarQubeScanner';
-                    withSonarQubeEnv("Test_Sonar") {
-                        // sh "mvn sonar:sonar"
-                        bat "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties"
-                    }
-                }
-            }
-        }
-        stage('Unit Testing') {
-            when {
-                branch 'master'
-            }
-            steps {
-                echo 'hello! I am in master environment'
-                script {
-                    env.DOCKER_PORT=MASTER_DOCKER_PORT
-                    env.KUBERENETES_PORT=MASTER_KUBERNETES_PORT
-                }
-                sh 'mvn test'
-            }
-        }
-        stage('Upload to Artifactory')  {
-            steps {
-                rtMavenDeployer(
-                    id: 'deployer',
-                    serverId: '123456789@artifactory',
-                    releaseRepo: 'CI-Automation-JAVA',
-                    snapshotRepo: 'CI-Automation-JAVA'
-                )
-                rtMavenRun(
-                    pom: 'pom.xml',
-                    goals: 'clean install',
-                    deployerId: 'deployer',
-                )
-                rtPublishBuildInfo(
-                    serverId: '123456789@artifactory',
-                )
-            }
-        }
+        //             def scannerHome = tool 'SonarQubeScanner';
+        //             withSonarQubeEnv("Test_Sonar") {
+        //                 // sh "mvn sonar:sonar"
+        //                 bat "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties"
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Unit Testing') {
+        //     when {
+        //         branch 'master'
+        //     }
+        //     steps {
+        //         echo 'hello! I am in master environment'
+        //         script {
+        //             env.DOCKER_PORT=MASTER_DOCKER_PORT
+        //             env.KUBERENETES_PORT=MASTER_KUBERNETES_PORT
+        //         }
+        //         sh 'mvn test'
+        //     }
+        // }
+        // stage('Upload to Artifactory')  {
+        //     steps {
+        //         rtMavenDeployer(
+        //             id: 'deployer',
+        //             serverId: '123456789@artifactory',
+        //             releaseRepo: 'CI-Automation-JAVA',
+        //             snapshotRepo: 'CI-Automation-JAVA'
+        //         )
+        //         rtMavenRun(
+        //             pom: 'pom.xml',
+        //             goals: 'clean install',
+        //             deployerId: 'deployer',
+        //         )
+        //         rtPublishBuildInfo(
+        //             serverId: '123456789@artifactory',
+        //         )
+        //     }
+        // }
         stage('Docker Image') {
             steps {
                 script {
-                    image = 'dockerabctest/i_sachinkumar08_${BRANCH_NAME}:${BUILD_NUMBER}'
+                    image = 'dockerabctest/i_sachinkumar08_master:5' // 'dockerabctest/i_sachinkumar08_${BRANCH_NAME}:${BUILD_NUMBER}'
                 }
-                sh "docker build -t ${image} --no-cache -f Dockerfile ."
+                // sh "docker build -t ${image} --no-cache -f Dockerfile ."
             }
         }
         stage('Containers') {
@@ -107,18 +107,18 @@ pipeline {
                     }
                   }
                 }
-                stage('Push to DTR') {
-                    steps {
-                        sh "docker push ${image}"
-                    }
-                }
+                // stage('Push to DTR') {
+                //     steps {
+                //         sh "docker push ${image}"
+                //     }
+                // }
             }
         }
-        stage('Docker deployment') {
-            steps {
-                sh "docker run --name c_sachinkumar08_\${BRANCH_NAME} -d -p ${DOCKER_PORT}:8080 ${image}"
-            }
-        }
+        // stage('Docker deployment') {
+        //     steps {
+        //         sh "docker run --name c_sachinkumar08_\${BRANCH_NAME} -d -p ${DOCKER_PORT}:8080 ${image}"
+        //     }
+        // }
         stage('Helm Chart deployment') {
             steps {
                 script {
@@ -127,13 +127,13 @@ pipeline {
                      */
                     namespace = 'sachinkumar08-java-${BRANCH_NAME}'
                     
-                    // withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(variable: 'KUBECONFIG')]) {
                         /**
                         * Using latest helm 3.3.1 with --create-namespace flag to create ns.
                         * Also, using helm upgrade --install to create/update on the same port
                         */
                         sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace -n ${namespace}"
-                    // }
+                    }
                 }
             }
         }
