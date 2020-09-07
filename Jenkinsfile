@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                // sh 'mvn clean install'
             }
         }
         stage('Sonar Analysis') {
@@ -45,7 +45,7 @@ pipeline {
                 
                     def scannerHome = tool 'SonarQubeScanner';
                     withSonarQubeEnv("Test_Sonar") {
-                        sh "mvn sonar:sonar"
+                        bat "mvn ${scannerHome}:sonar"
                         // bat "${scannerHome}\\bin\\sonar-scanner -Dproject.settings=./sonar-project.properties -X"
                     }
                 }
