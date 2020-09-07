@@ -127,7 +127,7 @@ pipeline {
                      */
                     namespace = 'sachinkumar08-java-${BRANCH_NAME}'
                     
-                    withCredentials([file(variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'KUBECONFIG')]) {
                         /**
                         * Using latest helm 3.3.1 with --create-namespace flag to create ns.
                         * Also, using helm upgrade --install to create/update on the same port
