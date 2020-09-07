@@ -33,24 +33,24 @@ pipeline {
         //         // sh 'mvn clean install'
         //     }
         // }
-        // stage('Sonar Analysis') {
-        //     when {
-        //         branch 'develop'
-        //     }
-        //     steps {
-        //         echo 'hello! I am in development environment'
-        //         script {
-        //             env.DOCKER_PORT = DEVELOP_DOCKER_PORT
-        //             env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
+        stage('Sonar Analysis') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                echo 'hello! I am in development environment'
+                script {
+                    env.DOCKER_PORT = DEVELOP_DOCKER_PORT
+                    env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
                 
-        //             def scannerHome = tool 'SonarQubeScanner';
-        //             withSonarQubeEnv("Test_Sonar") {
-        //                 // sh "mvn sonar:sonar"
-        //                 bat "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties"
-        //             }
-        //         }
-        //     }
-        // }
+                    // def scannerHome = tool 'SonarQubeScanner';
+                    // withSonarQubeEnv("Test_Sonar") {
+                    //     // sh "mvn sonar:sonar"
+                    //     bat "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties"
+                    // }
+                }
+            }
+        }
         // stage('Unit Testing') {
         //     when {
         //         branch 'master'
