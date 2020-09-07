@@ -45,7 +45,8 @@ pipeline {
                 
                     def scannerHome = tool 'SonarQubeScanner';
                     withSonarQubeEnv("Test_Sonar") {
-                        bat "${scannerHome}\\bin\\sonar-scanner -Dproject.settings=./sonar-project.properties -X"
+                        sh "mvn sonar:sonar"
+                        // bat "${scannerHome}\\bin\\sonar-scanner -Dproject.settings=./sonar-project.properties -X"
                     }
                 }
             }
