@@ -46,7 +46,7 @@ pipeline {
                     def scannerHome = tool 'SonarQubeScanner';
                     withSonarQubeEnv("Test_Sonar") {
                         // bat "mvn ${scannerHome}:sonar"
-                        bat "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties -X"
+                        sh "${scannerHome}\\bin\\sonar-scanner.bat -Dproject.settings=./sonar-project.properties -X"
                     }
                 }
             }
@@ -140,7 +140,12 @@ pipeline {
     }
     post {
         always {
-            junit '**/test-reports/.*xml'
+            when {
+                branch 'master'
+            }
+            steps {
+                junit '**/test-reports/.*xml'
+            }
         }
     }
 }
