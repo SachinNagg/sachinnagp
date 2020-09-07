@@ -28,11 +28,11 @@ pipeline {
                 checkout scm;
             }
         }
-        stage('Build') {
-            steps {
-                // sh 'mvn clean install'
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         // sh 'mvn clean install'
+        //     }
+        // }
         stage('Sonar Analysis') {
             when {
                 branch 'develop'
