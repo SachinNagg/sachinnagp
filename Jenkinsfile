@@ -122,7 +122,7 @@ pipeline {
                       * Sharing namespace as per the branch
                      */
                     namespace = 'sachinkumar08-java-${BRANCH_NAME}'
-                    
+                    echo "fkjsssssssssssssssssssssssssss"
                     // withCredentials([file(credentialsId: 'KUBECONFIG',variable: 'KUBECONFIG')]) {
                         /**
                             * Using latest helm 3.3.1 with --create-namespace flag to create ns.
