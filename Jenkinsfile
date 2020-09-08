@@ -118,9 +118,7 @@ pipeline {
         stage('Helm Chart deployment') {
             steps {
                 script {
-                    /**
-                      * Sharing namespace as per the branch
-                     */
+                    // Sharing namespace as per the branch
                     namespace = 'sachinkumar08-java-${BRANCH_NAME}'
                     
                     // withCredentials([file(credentialsId: 'KUBECONFIG',variable: 'KUBECONFIG')]) {
@@ -134,12 +132,11 @@ pipeline {
             }
         }
     }
-    // post {
-    //     always {
-    //        script {
-    //             if (${env.BRANCH_NAME} == 'master')
-    //                 junit '**/test-reports/.*xml'
-    //         }
-    //     }
-    // }
+    post {
+        always {
+           script {
+                junit '**/test-reports/.*xml'
+            }
+        }
+    }
 }
