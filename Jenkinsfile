@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment { 
-        DEVELOP_DOCKER_PORT = 6100
+        DEVELOP_DOCKER_PORT = 6200
         MASTER_DOCKER_PORT = 6000
        
         DEVELOP_KUBERNETES_PORT = 30158

@@ -10,7 +10,3 @@ containerName: c-sachinkumar08-
 
 # Default branch name
 branch: master
-
-# image detais
-# image:
-#  repository: dockerabctest/registry
