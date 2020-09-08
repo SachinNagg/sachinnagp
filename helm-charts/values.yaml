@@ -6,7 +6,4 @@ nodePort: 30157
 containerPort: 8080
 
 # To make the container name as per c-<username>-branchname
-containerName: c-sachinkumar08-
-
-# Default branch name
-branch: master
+containerName: c-sachinkumar08-master

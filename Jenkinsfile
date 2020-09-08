@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment { 
-        DEVELOP_DOCKER_PORT = 6200
-        MASTER_DOCKER_PORT = 6000
+        DEVELOP_DOCKER_PORT = 6100
+        MASTER_DOCKER_PORT = 6200
        
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
@@ -23,11 +23,6 @@ pipeline {
         disableConcurrentBuilds()
     }
     stages {
-        stage('Start') {
-            steps {
-                checkout scm;
-            }
-        }
         stage('Build') {
             steps {
                 sh 'mvn clean install'
@@ -38,7 +33,6 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                echo 'hello! I am in development environment'
                 script {
                     env.DOCKER_PORT = DEVELOP_DOCKER_PORT
                     env.KUBERENETES_PORT = DEVELOP_KUBERNETES_PORT
@@ -56,7 +50,6 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'hello! I am in master environment'
                 script {
                     env.DOCKER_PORT=MASTER_DOCKER_PORT
                     env.KUBERENETES_PORT=MASTER_KUBERNETES_PORT
@@ -85,9 +78,9 @@ pipeline {
         stage('Docker Image') {
             steps {
                 script {
-                    image = 'dtr.nagarro.com:443/i_sachinkumar08_${BRANCH_NAME}:${BUILD_NUMBER}'
+                    image = 'dtr.nagarro.com:443/i-sachinkumar08-${BRANCH_NAME}:${BUILD_NUMBER}'
+                    sh "docker build -t ${image} --no-cache -f Dockerfile ."
                 }
-                sh "docker build -t ${image} --no-cache -f Dockerfile ."
             }
         }
         stage('Containers') {
@@ -116,7 +109,10 @@ pipeline {
         }
         stage('Docker deployment') {
             steps {
-                sh "docker run --name c_sachinkumar08_\${BRANCH_NAME} -d -p ${DOCKER_PORT}:8080 ${image}"
+                script {
+                    container = "c-sachinkumar08-\${BRANCH_NAME}"
+                    sh "docker run --name ${container} -d -p ${DOCKER_PORT}:8080 ${image}"
+                }
             }
         }
         stage('Helm Chart deployment') {
@@ -129,10 +125,10 @@ pipeline {
                     
                     withCredentials([file(credentialsId: 'KUBECONFIG',variable: 'KUBECONFIG')]) {
                         /**
-                        * Using latest helm 3.3.1 with --create-namespace flag to create ns.
-                        * Also, using helm upgrade --install to create/update on the same port
+                            * Using latest helm 3.3.1 with --create-namespace flag to create ns.
+                            * Also, using helm upgrade --install to create/update on the same port
                         */
-                        sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --create-namespace -n ${namespace}"
+                        sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --set containerName=${container} --create-namespace -n ${namespace}"
                     }
                 }
             }

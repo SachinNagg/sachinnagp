@@ -15,7 +15,7 @@ spec:
         app: demo-sample-app
     spec:
       containers:
-        - name: "{{ .Values.containerName }}{{ .Values.branch }}"
+        - name: {{ .Values.containerName }}
           image: {{ .Values.image }}
           imagePullPolicy: Always
           ports:
