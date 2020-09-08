@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm-charts.fullname" . }}
+  name: {{ .Chart.name }}
   labels: 
-    {{- include "helm-charts.labels" . | nindent 4 }}
+    app: {{ .Chart.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "helm-charts.selectorLabels" . | nindent 6 }}
+      app: {{ .Chart.name }}
   template:
     metadata:
       labels:
-        {{- include "helm-charts.selectorLabels" . | nindent 8 }}
+        app: {{ .Chart.name }}
     spec:
       containers:
         - name: {{ .Values.containerName }}
@@ -24,9 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "helm-charts.fullname" . }}
-  labels:
-    {{- include "helm-charts.labels" . | nindent 4 }}
+  name: {{ .Chart.name }}-service
 spec:
   type: NodePort
   ports:
@@ -36,4 +34,4 @@ spec:
       name: port8080
       nodePort: {{ .Values.nodePort }}
   selector: 
-    {{- include "helm-charts.selectorLabels" . | nindent 4 }}
+    app: {{ .Chart.name }}
