@@ -5,5 +5,5 @@ replicaCount: 1
 nodePort: 30157
 containerPort: 8080
 
-# To make the container name as per c-<username>-branchname
+# Default container name
 containerName: c-sachinkumar08-master
