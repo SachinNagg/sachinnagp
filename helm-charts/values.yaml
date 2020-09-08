@@ -1,4 +1,5 @@
 # Default values for helm-charts.
+name: demo-sample-app
 replicaCount: 1
 
 # Default port number

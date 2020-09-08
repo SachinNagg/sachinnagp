@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.name }}
+  name: {{ .Values.name }}
   labels: 
-    app: {{ .Chart.name }}
+    app: {{ .Values.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.name }}
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.name }}
+        app: {{ .Values.name }}
     spec:
       containers:
         - name: {{ .Values.containerName }}
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.name }}-service
+  name: {{ .Values.name }}-service
 spec:
   type: NodePort
   ports:
@@ -34,4 +34,4 @@ spec:
       name: port8080
       nodePort: {{ .Values.nodePort }}
   selector: 
-    app: {{ .Chart.name }}
+    app: {{ .Values.name }}
