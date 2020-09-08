@@ -130,9 +130,9 @@ pipeline {
                         */
                         // sh "helm upgrade --install demo-sample-app helm-charts --set image=${image} --set nodePort=$KUBERENETES_PORT --set containerName=${container} --create-namespace -n ${namespace}"
 
-                        container('helm') {
+                        // container('helm') {
                           sh  "helm upgrade --install demo-sample-app helm-charts --set image=dtr.nagarro.com:443/i-sachinkumar08-develop:5 --set nodePort=30158 --set containerName=c-sachinkumar08-develop --create-namespace -n sachinkumar08-java-develop"
-                        }
+                        // }
                     // }
                 }
             }
