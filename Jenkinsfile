@@ -6,8 +6,6 @@ pipeline {
        
         DEVELOP_KUBERNETES_PORT = 30158
         MASTER_KUBERNETES_PORT = 30157
-
-        image=''
     }
     tools {
         maven 'Maven3'
